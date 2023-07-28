@@ -1,6 +1,4 @@
-# Tempo Frontend challenge
-
-# Solution Improvement
+# Frontend challenge - Solution Improvement
 
 ### Describe what you have improved in the solution
 
