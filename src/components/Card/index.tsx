@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Teams, UserData} from 'types';
-import {Container} from './styles';
+import {Avatar, CardContainer} from './styles';
 
 interface Props {
     id?: string;
@@ -12,37 +12,54 @@ interface Props {
     }>;
     hasNavigation?: boolean;
     navigationProps?: UserData | Teams;
+    hideColumnKey?: boolean;
+    initials?: string;
 }
 
 const Card = ({
     id,
-    columns,
     url,
+    columns,
+    initials,
     hasNavigation = true,
     navigationProps = null,
+    hideColumnKey = false,
 }: Props): JSX.Element => {
     const navigate = useNavigate();
 
     return (
-        <Container
+        <CardContainer
             data-testid={`cardContainer-${id}`}
             hasNavigation={hasNavigation}
+            hasInitials={Boolean(initials)}
             onClick={(e: Event) => {
+                e.preventDefault();
                 if (hasNavigation) {
                     navigate(url, {
                         state: navigationProps,
                     });
                 }
-                e.preventDefault();
             }}
         >
-            {columns.map(({key: columnKey, value}) => (
-                <p key={columnKey}>
-                    <strong>{columnKey}</strong>&nbsp;{value}
+            {initials && (
+                <Avatar>
+                    <figcaption>{initials}</figcaption>
+                </Avatar>
+            )}
+            {columns.map(({key, value}) => (
+                <p key={key}>
+                    {!hideColumnKey && (
+                        <React.Fragment>
+                            <strong>{key}</strong>
+                            {value && <strong>:</strong>}{' '}
+                        </React.Fragment>
+                    )}
+                    <span>{value}</span>
                 </p>
             ))}
-        </Container>
+        </CardContainer>
     );
 };
 
 export default Card;
+export {Props as CardProps};

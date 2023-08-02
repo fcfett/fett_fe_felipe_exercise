@@ -12,15 +12,15 @@ jest.mock('react-router-dom', () => ({
 
 describe('Card', () => {
     it('should render card with single column', () => {
-        var columns = [{key: 'columnKey', value: 'columnValue'}];
-        render(<Card columns={columns} />);
+        const columns = [{key: 'columnKey', value: 'columnValue'}];
+        render(<Card id="test-1" columns={columns} />);
 
         expect(screen.getByText('columnKey')).toBeInTheDocument();
         expect(screen.getByText('columnValue')).toBeInTheDocument();
     });
 
     it('should render card with multiple columns', () => {
-        var columns = [
+        const columns = [
             {key: 'columnKey1', value: 'columnValue1'},
             {key: 'columnKey2', value: 'columnValue2'},
             {key: 'columnKey3', value: 'columnValue3'},

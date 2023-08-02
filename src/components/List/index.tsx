@@ -1,20 +1,21 @@
 import * as React from 'react';
 import {ListItem} from 'types';
-import Card from '../Card';
+import Card, {CardProps} from '../Card';
 import {Spinner} from '../Spinner';
-import {Container} from './styles';
+import {ListContainer} from './styles';
 
-interface Props {
+interface Props extends Pick<CardProps, 'hideColumnKey'> {
     items?: ListItem[];
     hasNavigation?: boolean;
-    isLoading: string;
+    isLoading: boolean;
 }
 
-const List = ({items, hasNavigation = true, isLoading}: Props) => {
+const List = ({items, hasNavigation = true, isLoading, hideColumnKey = false}: Props) => {
     return (
-        <Container>
-            {isLoading && <Spinner />}
-            {!isLoading &&
+        <ListContainer isLoading={isLoading}>
+            {isLoading ? (
+                <Spinner />
+            ) : (
                 items.map(({url, id, columns, navigationProps}, index) => {
                     return (
                         <Card
@@ -24,10 +25,12 @@ const List = ({items, hasNavigation = true, isLoading}: Props) => {
                             navigationProps={navigationProps}
                             hasNavigation={hasNavigation}
                             url={url}
+                            hideColumnKey={hideColumnKey}
                         />
                     );
-                })}
-        </Container>
+                })
+            )}
+        </ListContainer>
     );
 };
 

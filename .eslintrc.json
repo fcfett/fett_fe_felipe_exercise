@@ -20,17 +20,23 @@
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "prettier"
       ],
-      "plugins": ["@typescript-eslint"],
+      "plugins": ["@typescript-eslint", "prettier"],
       "rules": {
-        "no-var": "off",
-        "no-unsafe-optional-chaining": 0,
-        "react/jsx-no-useless-fragment": [2, {"allowExpressions": true}],
-        "@typescript-eslint/no-explicit-any": 0,
+        "no-var": "error",
+        "prettier/prettier": "error",
+        "no-unsafe-optional-chaining": "error",
+        "react/jsx-no-useless-fragment": ["error", {"allowExpressions": true}],
+        "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/no-use-before-define": ["error"],
-        "@typescript-eslint/no-empty-function": 0,
-        "@typescript-eslint/no-shadow": ["error"]
+        "@typescript-eslint/no-empty-function": "error",
+        "@typescript-eslint/no-shadow": ["error"],
+        "@typescript-eslint/object-curly-spacing": ["error", "never"],
+        "no-multiple-empty-lines": ["error", { "max": 1 }],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"]
       }
     },
     {
@@ -120,6 +126,7 @@
     ],
     "import/no-cycle": 0, // off by default, should be checked regularly
     "import/named": 0,
+    "indent": ["error", 4],
     "react/jsx-fragments": [1, "element"],
     "react/jsx-no-target-blank": 0,
     "react/jsx-filename-extension": 0,
@@ -147,6 +154,7 @@
     "react-hooks/exhaustive-deps": "warn",
     "no-storage/no-browser-storage": 2,
     "no-param-reassign": ["error", {"props": false}],
-    "react/no-array-index-key": "off"
+    "react/no-array-index-key": "off",
+    "no-nested-ternary": "off"
   }
 }

@@ -1,5 +1,20 @@
 * {
-  margin: 0;
-  padding: 0;
-  outline: 0;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    font-family: sans-serif;
+    box-sizing: border-box;
+}
+
+#root {
+    position: absolute;
+    inset: 0;
+}
+
+:root {
+    --primary-color: #014789;
+    --secondary-color: #00ac65;
+    --secondary-color-darken: #008f4f;
+    --shadow-sm: 0 0 1px 0 rgb(0 0 0/8%), 0 1px 2px 0 rgba(0, 0, 0, 0.12);
+    --shadow: 0 1px 3px rgba(23, 23, 26, 0.1), 0 3px 6px rgba(23, 23, 26, 0.1);
 }
