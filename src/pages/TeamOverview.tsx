@@ -3,6 +3,7 @@ import {useLocation, useParams} from 'react-router-dom';
 import {ListItem, UserData} from 'types';
 import {ListContainer} from 'components/List/styles';
 import SearchBar from 'components/SearchBar';
+import NoResults from 'components/NoResults';
 import {getTeamOverview, getUserData} from '../api';
 import Card from '../components/Card';
 import {Container} from '../components/GlobalComponents';
@@ -35,6 +36,11 @@ const mapArray = (users: UserData[]) => {
 };
 
 const mapTLead = tlead => {
+    console.log(tlead);
+    if (!tlead) {
+        return null;
+    }
+
     const columns = [
         {
             key: 'Team Lead',
@@ -75,6 +81,10 @@ const TeamOverview = () => {
         filter ? teamData.filter(user => doesFilterMatchesName(filter, user)) : teamData
     );
 
+    const hasTeamItens = teamItems.length > 0;
+    const hasFilter = !isLoading && Boolean(filter);
+    const hasResults = !isLoading && (leadItem || hasTeamItens);
+
     React.useEffect(() => {
         getTeamOverview(teamId).then(({teamLeadId, teamMemberIds = []}) => {
             getUserData(teamLeadId).then(teamLead => setLeadData(teamLead));
@@ -102,7 +112,8 @@ const TeamOverview = () => {
                 <SearchBar placeholder="Search by member name..." onSubmit={setFilter} />
             )}
             {!isLoading && leadItem && <ListContainer>{leadItem}</ListContainer>}
-            <List items={teamItems} isLoading={isLoading} />
+            {(isLoading || hasTeamItens) && <List items={teamItems} isLoading={isLoading} />}
+            {hasFilter && !hasResults && <NoResults onClearFilter={() => setFilter(null)} />}
         </Container>
     );
 };

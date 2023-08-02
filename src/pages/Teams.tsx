@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {ListItem, Teams as TeamsList} from 'types';
 import SearchBar from 'components/SearchBar';
+import NoResults from 'components/NoResults';
 import {getTeams as fetchTeams} from '../api';
 import Header from '../components/Header';
 import List from '../components/List';
@@ -32,6 +33,10 @@ const Teams = () => {
         filter ? teams.filter(({name}) => name.toLowerCase().includes(filter.toLowerCase())) : teams
     );
 
+    const hasItems = listItems.length > 0;
+    const hasFilter = !isLoading && Boolean(filter);
+    const hasResults = !isLoading && hasItems;
+
     React.useEffect(() => {
         fetchTeams().then(resp => {
             setTeams(resp);
@@ -43,7 +48,10 @@ const Teams = () => {
         <Container>
             <Header title="Teams" showBackButton={false} />
             {!isLoading && <SearchBar placeholder="Search by team name..." onSubmit={setFilter} />}
-            <List items={listItems} isLoading={isLoading} hideColumnKey />
+            {(isLoading || hasItems) && (
+                <List items={listItems} isLoading={isLoading} hideColumnKey />
+            )}
+            {hasFilter && !hasResults && <NoResults onClearFilter={() => setFilter(null)} />}
         </Container>
     );
 };
