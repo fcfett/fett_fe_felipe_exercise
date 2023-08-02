@@ -1,5 +1,6 @@
 import * as React from 'react';
-import {fireEvent, render, screen, waitFor, act} from '@testing-library/react';
+import {render, screen, waitFor} from '@testing-library/react';
+import {nextTick} from 'process';
 import * as API from '../../api';
 import Teams from '../Teams';
 
@@ -15,6 +16,17 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => ({}),
 }));
 
+const TEAMS_MOCK = [
+    {
+        id: '1',
+        name: 'Team1',
+    },
+    {
+        id: '2',
+        name: 'Team2',
+    },
+];
+
 describe('Teams', () => {
     beforeAll(() => {
         jest.useFakeTimers();
@@ -29,20 +41,13 @@ describe('Teams', () => {
     });
 
     it('should render spinner while loading', async () => {
-        // TODO - Add code for this test
+        render(<Teams />);
+
+        expect(screen.getByTestId('spinner')).toBeInTheDocument();
     });
 
     it('should render teams list', async () => {
-        jest.spyOn(API, 'getTeams').mockResolvedValue([
-            {
-                id: '1',
-                name: 'Team1',
-            },
-            {
-                id: '2',
-                name: 'Team2',
-            },
-        ]);
+        jest.spyOn(API, 'getTeams').mockResolvedValue(TEAMS_MOCK);
 
         render(<Teams />);
 
@@ -50,5 +55,25 @@ describe('Teams', () => {
             expect(screen.getByText('Team1')).toBeInTheDocument();
         });
         expect(screen.getByText('Team2')).toBeInTheDocument();
+    });
+
+    it('should filter teams by name', async () => {
+        jest.spyOn(API, 'getTeams').mockResolvedValue(TEAMS_MOCK);
+
+        render(<Teams />);
+
+        await waitFor(() => {
+            expect(screen.getByText('Team1')).toBeInTheDocument();
+        });
+        expect(screen.getByText('Team2')).toBeInTheDocument();
+
+        const searchBar = screen.getByTestId<HTMLInputElement>('search-bar');
+        searchBar.value = 'team1';
+        searchBar.form.submit();
+
+        nextTick(() => {
+            expect(screen.getByText('Team1')).toBeInTheDocument();
+            expect(screen.queryByText('Team2')).not.toBeInTheDocument();
+        });
     });
 });

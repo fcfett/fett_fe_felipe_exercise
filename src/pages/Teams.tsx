@@ -1,13 +1,15 @@
 import * as React from 'react';
 import {ListItem, Teams as TeamsList} from 'types';
+import SearchBar from 'components/SearchBar';
+import NoResults from 'components/NoResults';
 import {getTeams as fetchTeams} from '../api';
 import Header from '../components/Header';
 import List from '../components/List';
 import {Container} from '../components/GlobalComponents';
 
-var MapT = (teams: TeamsList[]) => {
+const MapT = (teams: TeamsList[]) => {
     return teams.map(team => {
-        var columns = [
+        const columns = [
             {
                 key: 'Name',
                 value: team.name,
@@ -23,22 +25,33 @@ var MapT = (teams: TeamsList[]) => {
 };
 
 const Teams = () => {
-    const [teams, setTeams] = React.useState<any>([]);
-    const [isLoading, setIsLoading] = React.useState<any>(true);
+    const [teams, setTeams] = React.useState<TeamsList[]>([]);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [filter, setFilter] = React.useState<string>();
+
+    const listItems = MapT(
+        filter ? teams.filter(({name}) => name.toLowerCase().includes(filter.toLowerCase())) : teams
+    );
+
+    const hasItems = listItems.length > 0;
+    const hasFilter = !isLoading && Boolean(filter);
+    const hasResults = !isLoading && hasItems;
 
     React.useEffect(() => {
-        const getTeams = async () => {
-            const response = await fetchTeams();
-            setTeams(response);
+        fetchTeams().then(resp => {
+            setTeams(resp);
             setIsLoading(false);
-        };
-        getTeams();
+        });
     }, []);
 
     return (
         <Container>
             <Header title="Teams" showBackButton={false} />
-            <List items={MapT(teams)} isLoading={isLoading} />
+            {!isLoading && <SearchBar placeholder="Search by team name..." onSubmit={setFilter} />}
+            {(isLoading || hasItems) && (
+                <List items={listItems} isLoading={isLoading} hideColumnKey />
+            )}
+            {hasFilter && !hasResults && <NoResults onClearFilter={() => setFilter(null)} />}
         </Container>
     );
 };
